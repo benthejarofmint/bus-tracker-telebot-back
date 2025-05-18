@@ -18,14 +18,9 @@ BOT_TOKEN = os.getenv('TELE_TOKEN')
 # gc = gspread.service_account(filename=JSON_TOKEN)
 
 
-# Running on railway server
-'''
-if os.getenv("GOOGLE_CREDS_BASE64"):
-    with open("credentials.json", "wb") as f:
-        f.write(base64.b64decode(os.getenv("GOOGLE_CREDS_BASE64")))
-gc = gspread.service_account(filename="credentials.json")
-'''
-
+# Running on render server
+google_credentials = os.getenv("GOOGLE_CREDS"):
+gc = gspread.service_account(filename="google_credentials")
 sh = gc.open("AL25 Everbridge Tracking")
 
 # Initialize the bot
