@@ -19,7 +19,7 @@ BOT_TOKEN = os.getenv('TELE_TOKEN')
 
 
 # Running on render server
-google_credentials = os.getenv("GOOGLE_CREDS"):
+google_credentials = os.getenv("GOOGLE_CREDS")
 gc = gspread.service_account(filename="google_credentials")
 sh = gc.open("AL25 Everbridge Tracking")
 
