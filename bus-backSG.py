@@ -19,8 +19,7 @@ BOT_TOKEN = os.getenv('TELE_TOKEN')
 
 
 # Running on render server
-google_credentials = os.getenv("GOOGLE_CREDS")
-gc = gspread.service_account(filename="google_credentials")
+gc = gspread.service_account(filename="/etc/secrets/bus-telegram-bot-459307-82fbb6e2e529")
 sh = gc.open("AL25 Everbridge Tracking")
 
 # Initialize the bot
