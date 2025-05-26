@@ -2,29 +2,37 @@ import telebot
 import os
 from dotenv import load_dotenv
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from zoneinfo import ZoneInfo
 import re
 import gspread
 from datetime import datetime
 import base64
+import json
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
 BOT_TOKEN = os.getenv('TELE_TOKEN')
+# Initialize the bot
+bot = telebot.TeleBot(BOT_TOKEN)
 
 # running locally to connect google sheets
 # JSON_TOKEN = os.getenv('JSON_PATHNAME')
 # gc = gspread.service_account(filename=JSON_TOKEN)
 
+def process_update_from_webhook(update_json):
+    update = telebot.types.Update.de_json(json.loads(update_json))
+    bot.process_new_updates([update])
 
 # Running on render server
 google_credentials = os.getenv("GOOGLE_CREDS")
-gc = gspread.service_account(filename="google_credentials")
+gc = gspread.service_account_from_dict(json.loads(google_credentials))
 sh = gc.open("AL25 Everbridge Tracking")
 
-# Initialize the bot
-bot = telebot.TeleBot(BOT_TOKEN)
+WEBHOOK_TOKEN = BOT_TOKEN  # use token in URL path
+WEBHOOK_PATH = f"/{WEBHOOK_TOKEN}"
+WEBHOOK_URL = os.getenv("WEBHOOK_URL") + WEBHOOK_PATH  # set this in your environment, e.g. https://your-app-name.onrender.com/<token>
 
 # Store user sessions in memory (for a live bot, consider a DB)
 user_sessions = {}
@@ -598,7 +606,7 @@ def log_checkpoint_to_sheet(chat_id, step_key, actual_pax=None, expected_pax=Non
         print(f"[ERROR] Column header not found: {e}")
         return
 
-    current_time = datetime.now().strftime("%H:%M")
+    current_time = datetime.now(ZoneInfo("Asia/Singapore")).strftime("%H:%M")
     worksheet.update_cell(row, time_col_index, current_time)
     worksheet.update_cell(row, tele_col_index, True)
 
