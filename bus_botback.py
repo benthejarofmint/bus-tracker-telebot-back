@@ -661,6 +661,3 @@ def recover_session_from_sheet(chat_id, bus_number):
 
     return None
 
-
-
-bot.infinity_polling()  
