@@ -19,13 +19,12 @@ BOT_TOKEN = os.getenv('TELE_TOKEN')
 
 
 # Running on render server
-google_credentials = os.getenv("GOOGLE_CREDS"):
+google_credentials = os.getenv("GOOGLE_CREDS")
 gc = gspread.service_account(filename="google_credentials")
 sh = gc.open("AL25 Everbridge Tracking")
 
 # Initialize the bot
 bot = telebot.TeleBot(BOT_TOKEN)
-
 
 # Store user sessions in memory (for a live bot, consider a DB)
 user_sessions = {}
@@ -34,11 +33,11 @@ user_sessions = {}
 HEADER_CACHE = {}
 
 # Define the sequential steps with button prompts
-steps = {
+steps = [
     "left_sunway", "at_30_min_mark", "reached_rest_stop", 
     "left_rest_stop", "reached_my_custom", "left_my_custom",
     "reached_sg_custom", "left_sg_custom", "reached_star"
-}
+]
 
 # Human-readable prompts for each step
 prompts = {
@@ -54,17 +53,6 @@ prompts = {
 }
 
 # Doing this so that we can recover lost sessions by making it globally available
-step_to_column = {
-    "left_star": "Time departed from Star/PTC",
-    "reached_sg_custom": "Time reach SG custom",
-    "left_sg_custom": "Time leave SG custom",
-    "reached_my_custom": "Time reach MY custom",
-    "left_my_custom": "Time leave MY custom",
-    "reached_rest_stop": "Time Reach Rest Stop",
-    "left_rest_stop": "Time Leave Rest Stop",
-    "at_30_min_mark": "Time reach 30 min mark",
-    "reached_runway": "Time bus reach sunway"
-}
 
 step_to_column = {
     "left_sunway": "Time departed from Sunway",
@@ -105,7 +93,7 @@ def handle_bus_recovery_check(message):
         send_step_prompt(chat_id)
     else:
         user_sessions[chat_id] = {"step_index": 0, "bus_number": bus_number}
-        bot.send_message(chat_id, "🆕 New bus detected. Please enter the *Wave number* (1–9):", parse_mode="Markdown")
+        bot.send_message(chat_id, "🆕 New bus detected. Please enter the *Wave number* (1–5):", parse_mode="Markdown")
         bot.register_next_step_handler(message, lambda msg: intercept_end_command(msg,handle_wave_number))
 
 def ask_wave_number(message):
@@ -182,7 +170,7 @@ def ask_and_validate_bus_number(message):
         send_step_prompt(chat_id)
     else:
         user_sessions[chat_id] = {"step_index": 0, "bus_number": bus_number}
-        bot.send_message(chat_id, "🆕 New bus detected. Please enter the *Wave number* (1–9):", parse_mode="Markdown")
+        bot.send_message(chat_id, "🆕 New bus detected. Please enter the *Wave number* (1–5):", parse_mode="Markdown")
         bot.register_next_step_handler(message, handle_wave_number)
 
 def ask_and_validate_bus_plate(message):
@@ -581,7 +569,7 @@ def log_initial_details_to_sheet(chat_id):
 def log_checkpoint_to_sheet(chat_id, step_key, actual_pax=None, expected_pax=None, remark=None):
     session = user_sessions[chat_id]
     row = session['row']
-    worksheet = sh.worksheet('D1')
+    worksheet = sh.worksheet('D5')
     columns = get_column_mapping(worksheet)
 
     # step_to_column is a global var
@@ -672,36 +660,6 @@ def recover_session_from_sheet(chat_id, bus_number):
             }
 
     return None
-
-
-
-
-# test code
-import random
-@bot.message_handler(commands=['simulate'])
-def simulate_test_user(message):
-    fake_chat_id = random.randint(1000000, 9999999)  # Unique each time
-
-    bus_number = f"TestBus{fake_chat_id % 1000}"
-    user_sessions[fake_chat_id] = {
-        "step_index": 0,
-        "bus_number": bus_number,
-        "bus_plate": f"TEST-{fake_chat_id % 9999}",
-        "bus_ic": "SimIC",
-        "bus_2ic": "Sim2IC",
-        "passenger_count": str(random.randint(30, 50))
-    }
-
-    row = get_or_create_user_row(bus_number)
-    user_sessions[fake_chat_id]['row'] = row
-    log_initial_details_to_sheet(fake_chat_id)
-
-    bot.send_message(
-        message.chat.id,
-        f"✅ Simulated session created.\n"
-        f"User ID: {fake_chat_id}\n"
-        f"Row {row} assigned for {bus_number}."
-    )
 
 
 
