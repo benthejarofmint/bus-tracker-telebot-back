@@ -121,7 +121,7 @@ def handle_wave_number(message):
     chat_id = message.chat.id
     wave = message.text.strip()
 
-    if not wave.isdigit() or not (1 <= int(wave) <= 9):
+    if not wave.isdigit() or not (0 <= int(wave) <= 6):
         bot.send_message(chat_id, "❌ Please enter a valid Wave number (1–5).")
         return bot.register_next_step_handler(message,lambda msg: intercept_end_command(msg, handle_wave_number))
 
@@ -357,6 +357,18 @@ def handle_step_callback(call):
                     parse_mode="Markdown"
                 )
 
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus too!\n",
+                    parse_mode="Markdown"
+                )
+
+            if step_key == "left_my_custom":
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus!\n",
+                    parse_mode="Markdown"
+                )
 
             prompt_passenger_count(chat_id, step_key)
             # bot.register_next_step_handler(message, handle_passenger_count_after_step)
