@@ -121,6 +121,10 @@ def handle_wave_number(message):
     chat_id = message.chat.id
     wave = message.text.strip()
 
+    # ✅ Exit early if user sends /end
+    if wave.lower() == "/end":
+        return end_bot(message)
+
     if not wave.isdigit() or not (0 <= int(wave) <= 6):
         bot.send_message(chat_id, "❌ Please enter a valid Wave number (1–5).")
         return bot.register_next_step_handler(message,lambda msg: intercept_end_command(msg, handle_wave_number))
@@ -369,6 +373,15 @@ def handle_step_callback(call):
                     "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus!\n",
                     parse_mode="Markdown"
                 )
+            if step_key == "left_my_custom":
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\nPlease bring down at the SG customs:\n"
+                    "- 🪧 *3 Bus Signages (Front, Left, Rear)*\n"
+                    "- 😷 *Surgical masks*\n"
+                    "- 🎒 *ALL BELONGINGS*",
+                    parse_mode="Markdown"
+                )
 
             prompt_passenger_count(chat_id, step_key)
             # bot.register_next_step_handler(message, handle_passenger_count_after_step)
@@ -384,6 +397,14 @@ def handle_step_callback(call):
 
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🟢 Okay", callback_data="begin_checklist"))
+        bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\nPlease *put up* the bus signages at the:\n"
+                    "- 🪧 *Front*\n"
+                    "- 🔲 *Left side*\n"
+                    "- 🪧 *Rear* of the bus.",
+                    parse_mode="Markdown"
+                )
         bot.send_message(chat_id, "Great! Please click the button below to begin the journey checklist.", reply_markup=markup)
 
     elif call.data == "begin_checklist":
