@@ -745,7 +745,8 @@ def recover_session_from_sheet(chat_id, bus_number):
                 "bus_plate": bus_plate,
                 "passenger_count": pax,
                 "bus_ic": bus_ic,
-                "bus_2ic": bus_2ic
+                "bus_2ic": bus_2ic,
+                "details_confirmed": True
             }
 
     return None
