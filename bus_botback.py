@@ -309,14 +309,21 @@ def send_step_prompt(chat_id):
     if step_index >= len(steps):
         bot.send_message(chat_id,
             "🎉 Congratulations! You've successfully reached Star safely. "
-            "Thank you for your effort 🙌\nPlease send /end to terminate this bot."
+            "Thank you for your effort 🙌\n\n"
+            "A few final reminders to wrap up smoothly:\n"
+            "• Please ensure the team doesn't wear lanyards while walking across the mall 🏢\n\n"
+            "• Boys head down first to unload, followed by the girls 🚶‍♂️🚶‍♀️\n\n"
+            "• Double-check that everyone has all their belongings 🎒📱\n\n"
+            "• Don't forget to collect the bus IC packs, signages, tracker, and masks — and please pass them to the welcome team 🎭📦\n\n"
+            "• Lastly, make sure all trash is properly disposed of on your own (do not pass to the welcome team) 🗑️\n\n"
+            "Please send /end to terminate this bot. Great job, team!"
         )
         return
     step_key = steps[step_index]
     markup = InlineKeyboardMarkup()
     markup.add(
-        InlineKeyboardButton(text="✅ Yes", callback_data=f"yes_{step_key}"),
-        InlineKeyboardButton(text="⬅️ Back", callback_data="go_back")
+        InlineKeyboardButton(text="⬅️ Back", callback_data="go_back"),
+        InlineKeyboardButton(text="✅ Yes", callback_data=f"yes_{step_key}")
     )
     bot.send_message(chat_id, f"{prompts[step_key]} (Click only when confirmed)", reply_markup=markup)
 
@@ -500,12 +507,20 @@ def handle_passenger_count_after_step(message):
 
     # ✅ NEW: Log time + checkbox to Google Sheet
     # log_checkpoint_to_sheet(chat_id, step_key)
-    threading.Thread(
-        target=log_checkpoint_to_sheet,
-        args=(chat_id, step_key)
-    ).start()
+    bot.send_message(chat_id, "⏳ Uploading checkpoint to sheet...")
 
-    bot.send_message(chat_id, "✅ Passenger count recorded.")
+    try:
+        log_checkpoint_to_sheet(chat_id, step_key)
+        bot.send_message(chat_id, "✅ Checkpoint successfully saved.")
+    except Exception as e:
+        bot.send_message(chat_id, f"❌ Failed to save checkpoint: {e}")
+
+    # threading.Thread(
+    #   target=log_checkpoint_to_sheet,
+    #   args=(chat_id, step_key)
+    # ).start()
+    # bot.send_message(chat_id, "✅ Passenger count recorded.")
+
     user_sessions[chat_id]['step_index'] += 1
     send_step_prompt(chat_id)
 
@@ -545,17 +560,31 @@ def handle_mismatch_reason(message):
     #    expected_pax=mismatch['expected_count'],
     #    remark=reason
     # )
-    threading.Thread(
-        target=log_checkpoint_to_sheet,
-        args=(chat_id, mismatch['step_key']),
-        kwargs={
-            "actual_pax": mismatch['actual_count'],
-            "expected_pax": mismatch['expected_count'],
-            "remark": reason
-        }
-    ).start()
 
-    bot.send_message(chat_id, "✅ Passenger count and remark recorded.")
+    bot.send_message(chat_id, "⏳ Uploading checkpoint and remarks to sheet...")
+
+    try:
+        log_checkpoint_to_sheet(
+            chat_id,
+            mismatch['step_key'],
+            actual_pax=mismatch['actual_count'],
+            expected_pax=mismatch['expected_count'],
+            remark=reason
+        )
+        bot.send_message(chat_id, "✅ Checkpoint and remarks successfully saved.")
+    except Exception as e:
+        bot.send_message(chat_id, f"❌ Failed to save checkpoint with remark: {e}")
+    
+    # threading.Thread(
+    #   target=log_checkpoint_to_sheet,
+    #   args=(chat_id, mismatch['step_key']),
+    #   kwargs={
+    #       "actual_pax": mismatch['actual_count'],
+    #       "expected_pax": mismatch['expected_count'],
+    #       "remark": reason
+    #   }
+    # ).start()
+    # bot.send_message(chat_id, "✅ Passenger count and remark recorded.")
     user_sessions[chat_id]['step_index'] += 1
     send_step_prompt(chat_id)
 
