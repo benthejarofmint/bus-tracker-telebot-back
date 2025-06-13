@@ -310,12 +310,11 @@ def send_step_prompt(chat_id):
         bot.send_message(chat_id,
             "🎉 Congratulations! You've successfully reached Star safely. "
             "Thank you for your effort 🙌\n\n"
-            "A few final reminders to wrap up smoothly:\n"
-            "• Please ensure the team doesn't wear lanyards while walking across the mall 🏢\n\n"
+            "A few final reminders to wrap up the journey smoothly:\n\n"
             "• Boys head down first to unload, followed by the girls 🚶‍♂️🚶‍♀️\n\n"
             "• Double-check that everyone has all their belongings 🎒📱\n\n"
-            "• Don't forget to collect the bus IC packs, signages, tracker, and masks — and please pass them to the welcome team 🎭📦\n\n"
-            "• Lastly, make sure all trash is properly disposed of on your own (do not pass to the welcome team) 🗑️\n\n"
+            "• Don't forget to collect the bus IC packs, signages, tracker, and masks — and please pass them back to the FTS at Star 🎭📦\n\n"
+            "• Lastly, make sure all trash is properly disposed of on your own! 🗑️\n\n"
             "Please send /end to terminate this bot. Great job, team!"
         )
         return
