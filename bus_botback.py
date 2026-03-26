@@ -1,38 +1,63 @@
+
+import json
 import telebot
 import os
 from dotenv import load_dotenv
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from zoneinfo import ZoneInfo
 import re
 import gspread
 from datetime import datetime
-import base64
-import json
-import threading
 from zoneinfo import ZoneInfo
-
-# Load environment variables from .env file
-load_dotenv()
-
+from google.oauth2 import service_account  # ✅ Correct import
+import threading
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
 BOT_TOKEN = os.getenv('TELE_TOKEN')
-# Initialize the bot
+
 bot = telebot.TeleBot(BOT_TOKEN)
-
-GSHEET_TAB = 'D5'
-
-# running locally to connect google sheets
-# JSON_TOKEN = os.getenv('JSON_PATHNAME')
-# gc = gspread.service_account(filename=JSON_TOKEN)
 
 def process_update_from_webhook(update_json):
     update = telebot.types.Update.de_json(json.loads(update_json))
     bot.process_new_updates([update])
 
-# Running on google / render server
-google_credentials = os.getenv("GOOGLE_CREDS")
-gc = gspread.service_account_from_dict(json.loads(google_credentials))
-sh = gc.open("AL25 Everbridge Tracking")
+
+# Load environment variables from .env file
+load_dotenv()
+
+
+# UNCOMMENT TO run locally to connect google sheets
+# JSON_TOKEN = os.getenv('JSON_PATHNAME')
+# gc = gspread.service_account(filename=JSON_TOKEN)
+
+
+
+# # UNCOMMENT to run on cloud run, this loads the raw JSON string from the environment
+json_str = os.getenv("JSON_PATHNAME")  # or 'JSON_PATHNAME' if that’s what you're using
+
+if not json_str:
+    raise ValueError("Missing CREDENTIALS_JSON environment variable")
+
+# Parse the JSON string into a Python dict
+info = json.loads(json_str)
+
+# Build credentials from the info
+scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+
+credentials = service_account.Credentials.from_service_account_info(info, scopes=scopes)
+
+gc = gspread.authorize(credentials)
+
+##DO NOT UNCOMMENT BEYOND THIS LINE HERE
+
+GSHEET_NAME = os.getenv("GSHEET_NAME", "AL26 Bus Tracking")
+GSHEET_TAB = os.getenv("GSHEET_TAB", "D5")
+
+sh = gc.open(GSHEET_NAME)
+
+# Initialize the bot
+bot = telebot.TeleBot(BOT_TOKEN)
+
+
+# app = Flask(__name__)
 
 WEBHOOK_TOKEN = BOT_TOKEN  # use token in URL path
 WEBHOOK_PATH = f"/{WEBHOOK_TOKEN}"
@@ -52,9 +77,11 @@ steps = [
 ]
 
 # Human-readable prompts for each step
+# Change for 2026:
+# Feedback saying that the 30mins mark is too vague - will update it
 prompts = {
     "left_sunway": "Have you left Sunway?",
-    "at_30_min_mark": "Are you at the 30 minutes mark?",
+    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway?",
     "reached_rest_stop":  "Have you reached the rest stop?",
     "left_rest_stop":  "Have you left the rest stop?",
     "reached_my_custom": "Have you reached MY Customs?",
