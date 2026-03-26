@@ -1,22 +1,38 @@
 from fastapi import FastAPI, Request
-from bus_botback import bot
 import os
 from dotenv import load_dotenv
 from bus_botback import process_update_from_webhook
 import uvicorn
 import httpx
 import requests
+import base64
 
 load_dotenv()
 
 app = FastAPI()
 
-BOT_TOKEN = os.getenv('TELE_TOKEN')
+BOT_TOKEN = os.getenv("TELE_TOKEN")
 CLOUD_RUN_BASE_URL = os.getenv("WEBHOOK_URL")
 WEBHOOK_URL = f"{CLOUD_RUN_BASE_URL}/{BOT_TOKEN}"
 
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook"
 print("📢 Loaded BOT_TOKEN:", BOT_TOKEN[:10] + "..." if BOT_TOKEN else "None")
+
+# Setup Google Sheets credentials for Cloud Run
+def setup_google_credentials():
+    # Check if running on Cloud Run (has GOOGLE_CREDS_BASE64)
+    if os.getenv("GOOGLE_CREDS_BASE64"):
+        print("🔧 Setting up Google credentials from environment...")
+        with open("credentials.json", "wb") as f:
+            f.write(base64.b64decode(os.getenv("GOOGLE_CREDS_BASE64")))
+        print("✅ Google credentials file created")
+    elif os.path.exists("credentials.json"):
+        print("✅ Found local credentials.json file")
+    else:
+        print("⚠️ No Google credentials found")
+
+# Setup credentials on startup
+setup_google_credentials()
 
 
 @app.get("/")
