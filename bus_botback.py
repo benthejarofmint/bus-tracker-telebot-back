@@ -86,7 +86,7 @@ steps = [
 # Feedback saying that the 30mins mark is too vague - will update it
 prompts = {
     "left_sunway": "Have you left Sunway?",
-    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway? \n\n [📍 View your location from the checkpoint here](https://maps.app.goo.gl/1iLLb1uy5Tp2W9uZ9)",
+    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway? \n\n [📍 View your location from the checkpoint here](https://maps.app.goo.gl/1iLLb1uy5Tp2W9uZ9)\n",
     "reached_rest_stop":  "Have you reached the rest stop?",
     "left_rest_stop":  "Have you left the rest stop?",
     "reached_my_custom": "Have you reached MY Customs?",
@@ -418,7 +418,7 @@ def send_step_prompt(chat_id):
         InlineKeyboardButton(text="⬅️ Back", callback_data="go_back"),
         InlineKeyboardButton(text="✅ Yes", callback_data=f"yes_{step_key}")
     )
-    bot.send_message(chat_id, f"{prompts[step_key]} (Click only when confirmed)", reply_markup=markup)
+    bot.send_message(chat_id, f"{prompts[step_key]} (Click only when confirmed)", reply_markup=markup, parse_mode="Markdown")
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_step_callback(call):
