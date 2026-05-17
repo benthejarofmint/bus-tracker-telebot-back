@@ -86,7 +86,7 @@ steps = [
 # Feedback saying that the 30mins mark is too vague - will update it
 prompts = {
     "left_sunway": "Have you left Sunway?",
-    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway? \n\n [📍 View your location from the checkpoint here](https://maps.app.goo.gl/1iLLb1uy5Tp2W9uZ9)\n",
+    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway? \n[📍View your location from the checkpoint](https://maps.app.goo.gl/1iLLb1uy5Tp2W9uZ9)\n",
     "reached_rest_stop":  "Have you reached the rest stop?",
     "left_rest_stop":  "Have you left the rest stop?",
     "reached_my_custom": "Have you reached MY Customs?",
