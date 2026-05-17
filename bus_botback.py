@@ -86,7 +86,7 @@ steps = [
 # Feedback saying that the 30mins mark is too vague - will update it
 prompts = {
     "left_sunway": "Have you left Sunway?",
-    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway?",
+    "at_30_min_mark": "Are you at the toll with many tall yellow building 30mins away from Sunway? \n <a href='https://maps.app.goo.gl/1iLLb1uy5Tp2W9uZ9'>📍 View your location from the checkpoint here </a>",
     "reached_rest_stop":  "Have you reached the rest stop?",
     "left_rest_stop":  "Have you left the rest stop?",
     "reached_my_custom": "Have you reached MY Customs?",
@@ -487,16 +487,10 @@ def handle_step_callback(call):
 
                 bot.send_message(
                     chat_id,
-                    "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus too!\n",
+                    "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus before leaving customs!\n",
                     parse_mode="Markdown"
                 )
-
-            if step_key == "left_my_custom":
-                bot.send_message(
-                    chat_id,
-                    "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus!\n",
-                    parse_mode="Markdown"
-                )
+            
             if step_key == "left_my_custom":
                 bot.send_message(
                     chat_id,
@@ -504,6 +498,12 @@ def handle_step_callback(call):
                     "- 🪧 *3 Bus Signages (Front, Left, Rear)*\n"
                     "- 😷 *Surgical masks*\n"
                     "- 🎒 *ALL BELONGINGS*",
+                    parse_mode="Markdown"
+                )
+
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\nPlease remember to do a passport check with everyone in the bus before leaving customs!\n",
                     parse_mode="Markdown"
                 )
 
