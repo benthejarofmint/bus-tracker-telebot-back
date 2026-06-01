@@ -424,13 +424,14 @@ def send_step_prompt(chat_id):
     if step_index >= len(steps):
         bot.send_message(chat_id,
             "🎉 Congratulations! You've successfully reached Star safely. "
-            "Thank you for your effort 🙌\n\n"
-            "A few final reminders to wrap up the journey smoothly:\n\n"
-            "• Boys head down first to unload, followed by the girls 🚶‍♂️🚶‍♀️\n\n"
-            "• Double-check that everyone has all their belongings 🎒📱\n\n"
+            "Thank you for your labour of love 🙌\n\n"
+            "One final thing: We would require your help as Bus ICs to brief the youths in your bus on THE NEXT STEPS before wrapping up the journey smoothly:\n\n"
+            "• Due to the heavy traffic at the drop-off point, the youths are to take their luggages and quickly make their way towards Monki / 7-11\n\n"
+            "• Boys can head down first to unload, followed by the girls 🚶‍♂️🚶‍♀️\n\n"
+            "• Double-check that everyone has all their belongings before disembarking 🎒📱\n\n"
             "• Don't forget to collect the bus IC packs, signages, tracker, and masks — and please pass them back to the FTS at Star 🎭📦\n\n"
             "• Lastly, make sure all trash is properly disposed of on your own! 🗑️\n\n"
-            "Please send /end to terminate this bot. Great job, team!"
+            "Please send /end to terminate this bot. Great job, team!!"
         )
         return
     step_key = steps[step_index]
