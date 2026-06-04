@@ -219,6 +219,7 @@ def ask_and_validate_bus_number(message):
 
     # Try to recover session from sheet. A raised error here means the lookup
     # failed (not that the bus is new) — don't fall through to "new bus".
+    bot.send_chat_action(chat_id, 'typing')
     try:
         session = recover_session_from_sheet(chat_id, bus_number)
     except Exception as e:
