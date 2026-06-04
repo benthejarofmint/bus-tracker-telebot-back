@@ -512,11 +512,7 @@ def handle_step_callback(call):
                 bot.send_message(
                     chat_id,
                     "*[IMPORTANT]*\n\n"
-                    "🔔 *Reminder for Bus IC:*\nPlease put back the event signages at the:\n"
-                    "- 🪧 *Front*\n"
-                    "- 🔲 *Left side*\n"
-                    "- 🪧 *Rear* of the bus."
-                    "Please also remember to do a *passport check* with everyone in the bus before leaving customs!\n",
+                    "Please remember to do a *passport check* with everyone in the bus before leaving SG customs!\n",
                     parse_mode="Markdown"
                 )
 
@@ -536,12 +532,47 @@ def handle_step_callback(call):
                 bot.send_message(
                     chat_id,
                     "🔔 *Reminder for Bus IC:*\nPlease bring down at the SG customs:\n"
-                    "- 🪧 *3 Bus Signages (Front, Left, Rear)*\n"
                     "- 😷 *N95 masks*\n"
                     "- 🎒 *ALL BELONGINGS*\n"
-                    "Please also remember to do a *passport check* with everyone in the bus before leaving customs!\n",
+                    "✅ The 🪧 *3 Bus Signages (Front, Left, Rear)* can be left on for you to identify the bus after clearing SG immigration.\n"
+                    "Please also remember to do a *passport check* with everyone in the bus before leaving MY customs!\n",
                     parse_mode="Markdown"
-                )      
+                )
+
+            if step_key == "reached_my_custom":
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\nPlease *put up* the event signages at the:\n"
+                    "- 🪧 *Front*\n"
+                    "- 🔲 *Left side*\n"
+                    "- 🪧 *Rear* of the bus."
+                    "for easier identification of your bus after clearing immigration.\n",
+                    parse_mode="Markdown"
+                )
+
+            if step_key == "reached_rest_stop":
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\n"
+                    "Please *PUT UP* the Bus signages at the:\n"
+                    "- 🪧 *Front*\n"
+                    "- 🔲 *Left side*\n"
+                    "- 🪧 *Rear* of the bus\n"
+                    "for easier identification of your bus.\n",
+                    parse_mode="Markdown"
+                )  
+
+            if step_key == "left_rest_stop":
+                bot.send_message(
+                    chat_id,
+                    "🔔 *Reminder for Bus IC:*\n"
+                    "Please *REMOVE* the Bus signages at the:\n"
+                    "- 🪧 *Front*\n"
+                    "- 🔲 *Left side*\n"
+                    "- 🪧 *Rear* of the bus\n"
+                    "before leaving the rest stop.\n",
+                    parse_mode="Markdown"
+                )    
 
             prompt_passenger_count(chat_id, step_key)
             # bot.register_next_step_handler(message, handle_passenger_count_after_step)
@@ -564,10 +595,7 @@ def handle_step_callback(call):
         markup.add(InlineKeyboardButton("🟢 Okay", callback_data="begin_checklist"))
         bot.send_message(
                     chat_id,
-                    "🔔 *Reminder for Bus IC:*\nPlease *put up* the bus signages at the:\n"
-                    "- 🪧 *Front*\n"
-                    "- 🔲 *Left side*\n"
-                    "- 🪧 *Rear* of the bus.",
+                    "🔔 *Reminder for Bus IC:*\nYou *DO NOT need to* put up the bus signages in the bus.",
                     parse_mode="Markdown"
                 )
         bot.send_message(chat_id, "Great! Please click the button below to begin the journey checklist.", reply_markup=markup)
